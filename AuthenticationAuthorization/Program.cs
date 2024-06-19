@@ -28,6 +28,15 @@ builder.Services.AddScoped<AccountBusiness>();
 builder.Services.AddScoped<EquipmentBusiness>();
 builder.Services.AddScoped<RoomBusiness>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigin", builder =>
+        builder.WithOrigins("https://localhost:7273")
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .WithExposedHeaders("X-Custom-Header")  // Example of exposing headers
+            .SetIsOriginAllowedToAllowWildcardSubdomains());
+});
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -124,7 +133,7 @@ if (app.Environment.IsDevelopment())
 }
 
 //CORS
-app.UseCors(options => options.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+app.UseCors("AllowSpecificOrigin");
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

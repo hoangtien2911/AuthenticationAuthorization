@@ -34,7 +34,7 @@ public class AccountBusiness
         {
             Email = account.Email,
             Token = token,
-            Role = getRoleById(account.RoleId)
+            Role = GetRoleById(account.RoleId)
         };
         return new BusinessResult(true, loginResponse);
     }
@@ -52,22 +52,21 @@ public class AccountBusiness
           {
                   new("username", username),
                   new(ClaimTypes.Email, email),
-                  new(ClaimTypes.Role, getRoleById(roleId)),
+                  new(ClaimTypes.Role, GetRoleById(roleId)),
           },
           expires: DateTime.Now.AddMinutes(30),
           signingCredentials: credentials
           );
-
         return new JwtSecurityTokenHandler().WriteToken(token);
     }
 
-    private string getRoleById(int id)
+    private string GetRoleById(int id)
     {
         var roleName = id switch
         {
             1 => "Admin",
-            2 => "Manager",
-            3 => "Staff",
+            2 => "Staff",
+            3 => "Manager",
             _ => "User"
         };
 
