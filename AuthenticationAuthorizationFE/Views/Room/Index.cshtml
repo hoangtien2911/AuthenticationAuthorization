@@ -1,0 +1,69 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+<style>
+    #topUpModal .modal-dialog {
+        max-width: 60%; /* Adjust this value as needed */
+    }
+</style>
+<div class="row">
+    <div class="col-md-10">
+        <h2 class="display-8">Room List</h2>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <table class="table table-striped table-bordered table-hover">
+            <thead>
+                <tr class="card-header">
+                    <th class="card-title text-center">ID</th>
+                    <th class="card-title text-center">RoomName</th>
+                    <th class="card-title text-center">Location</th>
+                    <th class="card-title text-center">Status</th>
+                </tr>
+            </thead>
+            <tbody class="tblList">
+            </tbody>
+        </table>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            loadData();          
+        });
+
+        function loadData() {
+            var spin = document.getElementById('spinner-overlay');
+            $.ajax({
+                url: '@Url.Action("GetAll", "Room")',
+                type: "GET",
+                contentType: "application/json;charset=utf-8",
+                dataType: "json",
+                success: function (result) {
+                    var html = '';
+                    // console.log(result);
+                    $.each(result, function (key, item) {
+                        console.log(item);
+                        html += '<tr>';
+                        html += '<td>' + item.id + '</td>';
+                        html += '<td>' + item.name + '</td>';
+                        html += '<td>' + item.location + '</td>';
+                        html += '<td>' + item.status + '</td>';
+                        html += '</tr>';
+                    });
+                    $('.tblList').html(html);
+                },
+                error: function (xhr, error) {
+                    console.log(xhr.responseText);
+                    $('#errorMessage').text(xhr.responseText);
+                }
+            });
+        }
+
+    
+
+    </script>
+}

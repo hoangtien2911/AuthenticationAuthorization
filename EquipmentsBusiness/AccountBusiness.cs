@@ -33,31 +33,18 @@ public class AccountBusiness
         var loginResponse = new LoginResponse
         {
             Email = account.Email,
-            Token = token
+            Token = token,
+            Role = getRoleById(account.RoleId)
         };
         return new BusinessResult(true, loginResponse);
     }
 
-    private string GenerateJSONWebToken(string username, string email, int role)
+    private string GenerateJSONWebToken(string username, string email, int roleId)
     {
         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
-        string roleName;
-        switch (role)
-        {
-            case 1:
-                roleName = "Admin";
-                break;
-            case 2:
-                roleName = "Manager";
-                break;
-            case 3:
-                roleName = "Staff";
-                break;
-            default:
-                roleName = "User";
-                break;
-        }
+
+
 
         var token = new JwtSecurityToken(_config["Jwt:Issuer"],
           _config["Jwt:Audience"],
@@ -65,14 +52,26 @@ public class AccountBusiness
           {
                   new("username", username),
                   new(ClaimTypes.Email, email),
-                  new(ClaimTypes.Role, roleName),
+                  new(ClaimTypes.Role, getRoleById(roleId)),
           },
           expires: DateTime.Now.AddMinutes(30),
           signingCredentials: credentials
           );
 
         return new JwtSecurityTokenHandler().WriteToken(token);
+    }
 
+    private string getRoleById(int id)
+    {
+        var roleName = id switch
+        {
+            1 => "Admin",
+            2 => "Manager",
+            3 => "Staff",
+            _ => "User"
+        };
+
+        return roleName;
     }
 
 }

@@ -1,4 +1,4 @@
-﻿namespace EquipmentsBusiness.Response;
+﻿namespace AuthenticationAuthorizationFE.Response;
 
 public class LoginResponse
 {

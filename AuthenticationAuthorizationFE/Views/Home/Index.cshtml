@@ -1,0 +1,52 @@
+﻿@model AuthenticationAuthorizationFE.Request.LoginRequest
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Login</h1>
+    <div style="align-items: center; width: 400px; margin-left: auto; margin-right: auto; ">
+        <div class="d-flex flex-column align-items-center">
+            <div class="form-group" style="display: flex;  align-items: center; margin-bottom: 10px;">
+                <label style="margin-right: 8px;">Username:</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Username" required style="flex: 1; max-width: 200px;">
+            </div>
+            <div class="form-group" style="display: flex; align-items: center;">
+                <label style="margin-right: 10px;">Password:</label>
+                <input type="password" class="form-control" id="password" name="password" placeholder="Password" required style="flex: 1; max-width: 200px;">
+            </div>
+        </div>
+
+        <span id="errorMessage" class="text-danger"></span>
+        <br />
+        <div style="margin-top: 10px; vertical-align:central; display:flex; justify-content:space-around">
+            <button type="submit" class="btn btn-primary" onclick="login();">Login</button>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        function login() {
+            var loginRequest = {
+                Password: $('#password').val(),
+                Username: $('#username').val(),
+            };
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("Login", "Account")',
+                contentType: 'application/json;charset=utf-8',
+                dataType: "json",
+                data: JSON.stringify(loginRequest),
+                success: function (result) {
+                    console.log(result);
+                    window.location.href = '/Equipment/Index';
+                },
+                error: function (xhr, error) {
+                    console.log(xhr.responseText);
+                    $('#errorMessage').text(xhr.responseText);
+                }
+            });
+        }
+    </script>
+}
